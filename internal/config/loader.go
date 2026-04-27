@@ -27,6 +27,8 @@ func LoadConfig(configPath string) (*Config, error) {
 		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
 			return nil, fmt.Errorf("error reading config file: %w", err)
 		}
+	} else {
+		fmt.Printf("[DEBUG] Config file loaded from: %s\n", v.ConfigFileUsed())
 	}
 
 	// 将 Viper 配置绑定到结构体

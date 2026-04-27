@@ -56,7 +56,7 @@ redis:
 
 # Kafka 消息队列配置
 kafka:
-  brokers: ["kafka:9092"]
+  brokers: ["localhost:9092"]
   # 生产者配置
   producer:
     required_acks: 1

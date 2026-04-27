@@ -77,26 +77,35 @@ type Redis struct {
 	PoolTimeout  time.Duration `yaml:"pool_timeout"`
 }
 
+// KafkaProducer holds Kafka producer settings
+type KafkaProducer struct {
+	RequiredAcks    int           `yaml:"required_acks" mapstructure:"required_acks"`
+	Compression     string        `yaml:"compression" mapstructure:"compression"`
+	MaxMessageBytes int           `yaml:"max_message_bytes" mapstructure:"max_message_bytes"`
+	Timeout         time.Duration `yaml:"timeout" mapstructure:"timeout"`
+}
+
+// KafkaConsumer holds Kafka consumer settings
+type KafkaConsumer struct {
+	GroupID           string        `yaml:"group_id" mapstructure:"group_id"`
+	InitialOffset     string        `yaml:"initial_offset" mapstructure:"initial_offset"`
+	SessionTimeout    time.Duration `yaml:"session_timeout" mapstructure:"session_timeout"`
+	HeartbeatInterval time.Duration `yaml:"heartbeat_interval" mapstructure:"heartbeat_interval"`
+	MaxProcessingTime time.Duration `yaml:"max_processing_time" mapstructure:"max_processing_time"`
+}
+
+// KafkaTopics holds Kafka topic settings
+type KafkaTopics struct {
+	UserCreated    string `yaml:"user_created" mapstructure:"user_created"`
+	OrderProcessed string `yaml:"order_processed" mapstructure:"order_processed"`
+}
+
 // Kafka holds Kafka client settings
 type Kafka struct {
-	Brokers  []string `yaml:"brokers"`
-	Producer struct {
-		RequiredAcks    int           `yaml:"required_acks"`
-		Compression     string        `yaml:"compression"`
-		MaxMessageBytes int           `yaml:"max_message_bytes"`
-		Timeout         time.Duration `yaml:"timeout"`
-	} `yaml:"producer"`
-	Consumer struct {
-		GroupID           string        `yaml:"group_id"`
-		InitialOffset     string        `yaml:"initial_offset"`
-		SessionTimeout    time.Duration `yaml:"session_timeout"`
-		HeartbeatInterval time.Duration `yaml:"heartbeat_interval"`
-		MaxProcessingTime time.Duration `yaml:"max_processing_time"`
-	} `yaml:"consumer"`
-	Topics struct {
-		UserCreated    string `yaml:"user_created"`
-		OrderProcessed string `yaml:"order_processed"`
-	} `yaml:"topics"`
+	Brokers  []string      `yaml:"brokers" mapstructure:"brokers"`
+	Producer KafkaProducer `yaml:"producer" mapstructure:"producer"`
+	Consumer KafkaConsumer `yaml:"consumer" mapstructure:"consumer"`
+	Topics   KafkaTopics   `yaml:"topics" mapstructure:"topics"`
 }
 
 // Logger holds logging settings
