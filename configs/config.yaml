@@ -1,0 +1,84 @@
+# 应用通用配置
+app:
+  name: "my-go-microservice"
+  env: "development" # 环境模式: development, staging, production
+  version: "v1.0.0"
+  debug: true
+
+# HTTP 服务器配置
+http:
+  host: "0.0.0.0"
+  port: 8080
+  read_timeout: "5s"
+  write_timeout: "10s"
+  idle_timeout: "60s"
+
+# gRPC 服务器配置
+grpc:
+  host: "0.0.0.0"
+  port: 9090
+  max_recv_msg_size: 4194304 # 4MB
+  max_send_msg_size: 4194304 # 4MB
+  keepalive_time: "2h"
+  timeout: "30s"
+
+# PostgreSQL 数据库配置
+database:
+  postgres:
+    host: "localhost"
+    port: 5432
+    username: "postgres"
+    password: "password"
+    dbname: "myapp_dev"
+    sslmode: "disable"
+    timezone: "UTC"
+    # 连接池设置
+    max_open_conns: 25
+    max_idle_conns: 25
+    conn_max_lifetime: "1h"
+    conn_max_idle_time: "30m"
+
+# Redis 缓存配置
+redis:
+  addr: "localhost:6379"
+  password: ""
+  db: 0
+  pool:
+    max_idle: 10
+    max_active: 20
+    idle_timeout: "5m"
+    wait: true
+  # 超时设置（单位：秒）
+  dial_timeout: 5
+  read_timeout: 3
+  write_timeout: 3
+  pool_timeout: 4
+
+# Kafka 消息队列配置
+kafka:
+  brokers: ["localhost:9092"]
+  # 生产者配置
+  producer:
+    required_acks: 1
+    compression: "none"
+    max_message_bytes: 1048576 # 1MB
+    timeout: "10s"
+  # 消费者配置
+  consumer:
+    group_id: "myapp-group"
+    initial_offset: "oldest"
+    session_timeout: "10s"
+    heartbeat_interval: "3s"
+    max_processing_time: "5s"
+  # 主题配置
+  topics:
+    user_created: "user.created.event"
+    order_processed: "order.processed.event"
+
+# 日志系统配置
+logger:
+  level: "debug" # 支持 trace, debug, info, warn, error, fatal, panic
+  format: "json" # 可选 json 或 text
+  output: "stdout" # 可选 stdout 或文件路径如 logs/app.log
+  enable_caller: true
+  disable_stacktrace: false

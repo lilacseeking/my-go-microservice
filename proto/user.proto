@@ -1,0 +1,49 @@
+// proto/user.proto
+syntax = "proto3";
+
+// 指定 Go 包名和生成路径
+option go_package = "./proto;proto";
+
+// 导入标准时间类型，支持 RFC3339 格式的时间字段
+import "google/protobuf/timestamp.proto";
+
+// UserService 提供用户管理相关的远程过程调用
+service UserService {
+  // CreateUser 创建一个新用户
+  // 输入：CreateUserRequest
+  // 输出：CreateUserResponse
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
+
+  // GetUser 根据用户ID获取用户信息
+  // 输入：GetUserRequest
+  // 输出：GetUserResponse
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+}
+
+// User 表示系统中的用户实体
+message User {
+  string id = 1;           // 用户唯一标识符
+  string name = 2;         // 用户姓名
+  string email = 3;        // 邮箱地址
+  google.protobuf.Timestamp created_at = 4; // 创建时间，RFC3339格式
+}
+
+// CreateUserRequest 封装创建用户所需的请求数据
+message CreateUserRequest {
+  User user = 1; // 待创建的用户对象
+}
+
+// CreateUserResponse 返回创建成功后的结果
+message CreateUserResponse {
+  string user_id = 1; // 新创建用户的唯一ID
+}
+
+// GetUserRequest 请求中包含要查询的用户ID
+message GetUserRequest {
+  string id = 1; // 要查询的用户ID
+}
+
+// GetUserResponse 返回查询到的用户信息
+message GetUserResponse {
+  User user = 1; // 查询返回的用户对象
+}
