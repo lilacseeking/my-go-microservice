@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"github.com/spf13/viper"
+	"strings"
 )
 
 func LoadConfig(configPath string) (*Config, error) {
@@ -15,7 +16,9 @@ func LoadConfig(configPath string) (*Config, error) {
 	v.AddConfigPath(configPath)
 	v.AddConfigPath(".")
 	v.AddConfigPath("/etc/myapp/")
-	// 允许环境变量覆盖
+	// 允许环境变量覆盖 - 使用更明确的环境变量前缀和分隔符
+	v.SetEnvPrefix("APP")
+	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	v.AutomaticEnv()
 
 	// 尝试读取配置文件

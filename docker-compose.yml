@@ -59,10 +59,11 @@ services:
 
       - "2181:2181"
     healthcheck:
-      test: ["CMD-SHELL", "echo stat | nc localhost 2181 | grep Mode"]
+      test: ["CMD-SHELL", "echo srvr | nc localhost 2181 | grep Mode"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 30s
     restart: unless-stopped
     networks:
 
@@ -82,7 +83,7 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
       KAFKA_DELETE_TOPIC_ENABLE: 'true'
@@ -94,6 +95,35 @@ services:
     restart: unless-stopped
     networks:
 
+      - microservice-net
+
+  # Go 微服务应用
+  app:
+    build: .
+    container_name: go_micro_app
+    ports:
+      - "8080:8080"   # HTTP API
+      - "9090:9090"   # gRPC
+      - "8081:8081"   # Health Check
+    environment:
+      APP_APP_ENV: "development"
+      APP_DATABASE_POSTGRES_HOST: postgres
+      APP_DATABASE_POSTGRES_PORT: 5432
+      APP_DATABASE_POSTGRES_USERNAME: postgres
+      APP_DATABASE_POSTGRES_PASSWORD: password
+      APP_DATABASE_POSTGRES_DBNAME: myapp_dev
+      APP_REDIS_ADDR: redis:6379
+      APP_KAFKA_BROKERS_0: kafka:9092
+      APP_KAFKA_PRODUCER_MAX_MESSAGE_BYTES: 1048576
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
       - microservice-net
 
 # 自定义网络，确保服务间通信
